@@ -20,7 +20,7 @@ in {
         default = "127.0.0.1";
       };
 
-      internal-port = mkOption {
+      port = mkOption {
         type = port;
         description = "Port on which to listen for incoming events.";
         default = 5354;
