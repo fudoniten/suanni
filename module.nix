@@ -102,7 +102,7 @@ in {
       };
     };
 
-    systemd.suanni-server = {
+    systemd.services.suanni-server = {
       path = [ suanni-server ];
       wantedBy = [ "network-online.target" ];
       serviceConfig = {
