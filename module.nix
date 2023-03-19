@@ -4,7 +4,7 @@ packages:
 
 with lib;
 let
-  suanni-server = packages."${pkgs.system}".nexus-client;
+  suanni-server = packages."${pkgs.system}".suanni-server;
   cfg = config.suanni.server;
 
 in {

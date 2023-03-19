@@ -1,4 +1,4 @@
-(ns suanni.cli
+(ns suanni.server.cli
   (:require [suanni.syno-client :as syno]
             [suanni.stoppable :refer [stop!]]
             [milquetoast.client :as mqtt]
