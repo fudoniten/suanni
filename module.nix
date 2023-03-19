@@ -65,7 +65,7 @@ in {
       };
     };
 
-    mqtt-server = {
+    mqtt-client = {
       host = mkOption {
         type = str;
         description = "Hostname of the MQTT server.";
@@ -108,22 +108,24 @@ in {
       serviceConfig = {
         DynamicUser = true;
         LoadCredential = [
-          "syno.passwd:${cfg.synology.password-file}"
-          "mqtt.passwd:${cfg.mqtt-server.password-file}"
+          "syno.passwd:${cfg.synology-client.password-file}"
+          "mqtt.passwd:${cfg.mqtt-client.password-file}"
         ];
         ExecStart = pkgs.writeShellScript "suanni-server.sh"
           (concatStringsSep " " ([
             "suanni-server"
             "--hostname=${cfg.event-listener.hostname}"
             "--port=${toString cfg.event-listener.port}"
-            "--synology-host=${cfg.synology.host}"
-            "--synology-port=${toString cfg.synology.port}"
-            "--synology-user=${cfg.synology.username}"
+            "--synology-host=${cfg.synology-client.host}"
+            "--synology-port=${toString cfg.synology-client.port}"
+            "--synology-user=${cfg.synology-client.username}"
             "--synology-password-file=$CREDENTIALS_DIRECTORY/syno.passwd"
-            "--mqtt-host=${cfg.mqtt.host}"
-            "--mqtt-port=${toString cfg.mqtt.port}"
-            "--mqtt-user=${cfg.mqtt.username}"
+            "--mqtt-host=${cfg.mqtt-client.host}"
+            "--mqtt-port=${toString cfg.mqtt-client.port}"
+            "--mqtt-user=${cfg.mqtt-client.username}"
             "--mqtt-password-file=$CREDENTIALS_DIRECTORY/mqtt.passwd"
+            "--objectifier-host=${cfg.objectifier-client.host}"
+            "--objectifier-port=${cfg.objectifier-client.port}"
           ]) ++ (optional cfg.verbose "--verbose"));
       };
     };
