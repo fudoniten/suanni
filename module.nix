@@ -5,10 +5,10 @@ packages:
 with lib;
 let
   suanni-server = packages."${pkgs.system}".suanni-server;
-  cfg = config.suanni.server;
+  cfg = config.services.suanni.server;
 
 in {
-  options.suanni.server = with types; {
+  options.services.suanni.server = with types; {
     enable = mkEnableOption "Enable Suan Ni guardian server.";
 
     verbose = mkEnableOption "Generate verbose logs and output.";
@@ -91,17 +91,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    services.nginx = {
-      enable = true;
-      recommendedOptimisation = true;
-      recommendedProxySettings = true;
-      recommendedGzipSettings = true;
-
-      virtualHosts."${cfg.hostname}" = {
-        locations."/".proxyPass = "http://127.0.0.1:${toString cfg.port}";
-      };
-    };
-
     systemd.services.suanni-server = {
       path = [ suanni-server ];
       wantedBy = [ "network-online.target" ];
