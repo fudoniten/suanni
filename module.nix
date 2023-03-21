@@ -87,6 +87,11 @@ in {
         description =
           "File (on the local host) containing the password for the MQTT server.";
       };
+
+      topic = mkOption {
+        type = str;
+        description = "MQTT topic on which to publish events.";
+      };
     };
   };
 
@@ -114,6 +119,7 @@ in {
             "--mqtt-port=${toString cfg.mqtt-client.port}"
             "--mqtt-user=${cfg.mqtt-client.username}"
             "--mqtt-password-file=$CREDENTIALS_DIRECTORY/mqtt.passwd"
+            "--mqtt-topic=${cfg.mqtt-client.topic}"
             "--objectifier-host=${cfg.objectifier-client.host}"
             "--objectifier-port=${toString cfg.objectifier-client.port}"
           ] ++ (optional cfg.verbose "--verbose")));
