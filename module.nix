@@ -103,7 +103,7 @@ in {
         ];
         ExecStart = pkgs.writeShellScript "suanni-server.sh"
           (concatStringsSep " " ([
-            "suanni-server"
+            "suanni.server"
             "--hostname=${cfg.event-listener.hostname}"
             "--port=${toString cfg.event-listener.port}"
             "--synology-host=${cfg.synology-client.host}"

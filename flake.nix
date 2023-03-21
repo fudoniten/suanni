@@ -29,6 +29,9 @@
             buildInputs = with helpers.packages."${system}";
               [ updateClojureDeps ];
           };
+          suanniServer = pkgs.mkShell {
+            buildInputs = with self.packages."${system}"; [ suanni-server ];
+          };
         };
       }) // {
         nixosModules = rec {
