@@ -7,10 +7,8 @@
   (:require [fudo-clojure.http.client :as client]
             [fudo-clojure.http.request :as req]
             [fudo-clojure.result :as result]
-            [clojure.string :as str]
-            [slingshot.slingshot :refer [throw+]])
-  (:import  java.net.InetAddress
-            java.time.Instant))
+            [clojure.string :as str])
+  (:import  java.net.InetAddress))
 
 ;; ## Protocols
 
