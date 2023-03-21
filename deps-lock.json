@@ -4,9 +4,9 @@
     {
       "lib": "org.fudo/fudo-clojure",
       "url": "https://git.fudo.org/fudo-public/fudo-clojure.git",
-      "rev": "5fd28094e18281ff409050fb1b0dda94b76671ed",
+      "rev": "17a30f9815bbeabacc79fae05a468d7e04bfe04b",
       "git-dir": "https/git.fudo.org/fudo-public/fudo-clojure",
-      "hash": "sha256-zwX2KckXGRDOW1eww8Kr/iE/M2JeXISKU44R66I0vlY="
+      "hash": "sha256-MCsaIdeieifEKqLbfb7vC9xgLCKYE901pRBcuixxTbE="
     },
     {
       "lib": "org.fudo/milquetoast",
