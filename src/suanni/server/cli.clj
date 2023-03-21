@@ -48,7 +48,7 @@
                          (str/join \newline))))
 
 (defn- parse-opts [args required cli-opts]
-  (let [{:keys [options]} :as result (cli/parse-opts args cli-opts)
+  (let [{:keys [options] :as result} (cli/parse-opts args cli-opts)
         missing (set/difference required (-> options (keys) (set)))
         missing-errors (map #(format "missing required parameter: %s" (name %))
                             missing)]
