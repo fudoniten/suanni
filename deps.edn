@@ -10,7 +10,7 @@
 
         org.fudo/fudo-clojure {
                                :git/url "https://git.fudo.org/fudo-public/fudo-clojure.git"
-                               :git/sha "c605ec9719600566f7635e452283629682cd4f76"
+                               :git/sha "5fd28094e18281ff409050fb1b0dda94b76671ed"
                                }
         org.fudo/objectifier-client {
                                      :git/url "https://git.fudo.org/fudo-public/objectifier-client.git"
