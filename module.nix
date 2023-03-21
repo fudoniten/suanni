@@ -114,7 +114,7 @@ in {
             "--mqtt-user=${cfg.mqtt-client.username}"
             "--mqtt-password-file=$CREDENTIALS_DIRECTORY/mqtt.passwd"
             "--objectifier-host=${cfg.objectifier-client.host}"
-            "--objectifier-port=${cfg.objectifier-client.port}"
+            "--objectifier-port=${toString cfg.objectifier-client.port}"
           ]) ++ (optional cfg.verbose "--verbose"));
       };
     };
