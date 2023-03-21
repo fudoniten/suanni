@@ -101,7 +101,7 @@ in {
           "mqtt.passwd:${cfg.mqtt-client.password-file}"
         ];
         ExecStart = pkgs.writeShellScript "suanni-server.sh"
-          (concatStringsSep " " ([
+          (concatStringsSep " " [
             "suanni-server"
             "--hostname=${cfg.event-listener.hostname}"
             "--port=${toString cfg.event-listener.port}"
@@ -115,7 +115,7 @@ in {
             "--mqtt-password-file=$CREDENTIALS_DIRECTORY/mqtt.passwd"
             "--objectifier-host=${cfg.objectifier-client.host}"
             "--objectifier-port=${toString cfg.objectifier-client.port}"
-          ]) ++ (optional cfg.verbose "--verbose"));
+          ]) ++ (optional cfg.verbose "--verbose");
       };
     };
   };
