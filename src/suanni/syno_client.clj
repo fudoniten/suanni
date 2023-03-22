@@ -10,6 +10,8 @@
             [clojure.string :as str])
   (:import  java.net.InetAddress))
 
+(defn pthru [o] (clojure.pprint/pprint o) o)
+
 ;; ## Protocols
 
 ;; ### BaseSynoClient
@@ -92,18 +94,18 @@
     (get! conn
           (-> (req/base-request)
               (req/with-path (format "/webapi/%s" path))
-              (req/withQueryParams
-               {
-                :version      maxVersion
-                :session      :SurveillanceStation
-                :api          :SYNO.API.Auth
-                :method       :login
-                :account      account
-                :passwd       passwd
-                :format       :sid
-                :enable_device_token true
-                :device_name  (get-hostname)
-                })))))
+              (req/with-query-params
+                {
+                 :version      maxVersion
+                 :session      :SurveillanceStation
+                 :api          :SYNO.API.Auth
+                 :method       :login
+                 :account      account
+                 :passwd       passwd
+                 :format       :sid
+                 :enable_device_token true
+                 :device_name  (get-hostname)
+                 })))))
 
 (defn- perform-request! [http-client req]
   (result/bind (client/execute-request! http-client req)
