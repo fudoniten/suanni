@@ -11,16 +11,16 @@
     {
       "lib": "org.fudo/milquetoast",
       "url": "https://git.fudo.org/fudo-public/milquetoast.git",
-      "rev": "8f71590fd8d63a0a7ab45a46ae6a7a1eee99f16f",
+      "rev": "6c64dedc17f506f3190207bbe08eb1eb1edc7e01",
       "git-dir": "https/git.fudo.org/fudo-public/milquetoast",
-      "hash": "sha256-DpaqFv4HwEncDjkD3wQHMB50MmWMR6Z42+j5itGdT44="
+      "hash": "sha256-46iTmkDHpoPuuN4cxIDL1pIKjyKfAF5/tUlz4ixLsbs="
     },
     {
       "lib": "org.fudo/objectifier-client",
       "url": "https://git.fudo.org/fudo-public/objectifier-client.git",
-      "rev": "d4b5ecc0f98aa8168ca3ef13e182c688591298ae",
+      "rev": "3b2bcd702f41f77625bc4dfb47f53a8b1507cd4c",
       "git-dir": "https/git.fudo.org/fudo-public/objectifier-client",
-      "hash": "sha256-WVFG9yCKawBrEpNS0Bfdy+W3S5dBvlwJcfdMNJ1/rVM="
+      "hash": "sha256-MEjkPFCjgUSgVSkxWqJ0hcrnFwe2dYSTAKKCFoRHyos="
     }
   ],
   "mvn-deps": [

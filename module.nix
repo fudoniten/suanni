@@ -98,7 +98,7 @@ in {
   config = mkIf cfg.enable {
     systemd.services.suanni-server = {
       path = [ suanni-server ];
-      wantedBy = [ "default.target" ];
+      wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
       serviceConfig = {
         DynamicUser = true;

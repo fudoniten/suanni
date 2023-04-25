@@ -4,7 +4,7 @@
             [suanni.stoppable :refer [IStoppable stop!]]
             [milquetoast.client :as mqtt]
             [objectifier-client.core :as obj]
-            [clojure.core.async :as async :refer [<! >! go-loop]]
+            [clojure.core.async :as async :refer [<! >! go-loop <!! timeout]]
             [clojure.string :as str])
   (:import  java.time.Instant))
 
@@ -28,6 +28,24 @@
     (stop! listener))
   ISuanNiServer
   (object-channel [_] obj-chan))
+
+(defn- retry-attempt [verbose f]
+  (let [wrap-attempt (fn []
+                       (try [true (f)]
+                            (catch RuntimeException e
+                              (do (when verbose
+                                    (println (format "exception: %s"
+                                                     (.toString e))))
+                                  [false e]))))
+        max-wait     (* 5 60 1000)] ;; wait at most 5 minutes
+    (loop [[success? result] (wrap-attempt)
+           wait-ms 1000]
+      (if success?
+        result
+        (do (when verbose
+              (println (format "attempt failed, sleeping %s ms" wait-ms)))
+            (<!! (timeout wait-ms))
+            (recur (wrap-attempt) (min (* wait-ms 1.25) max-wait)))))))
 
 (defn start!
   [& {:keys [listen-host
@@ -69,7 +87,8 @@
           (println "stopping image listener")
           (async/close! obj-chan))
         (let [{:keys [location camera-id snapshot time]} image-data
-              summary (obj/get-summary! obj-client snapshot)]
+              summary (retry-attempt verbose
+                                     #(obj/get-summary! obj-client snapshot))]
           (when verbose
             (println (str "detected "
                           (count (:objects summary))

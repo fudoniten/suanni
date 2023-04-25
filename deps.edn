@@ -14,11 +14,11 @@
                                }
         org.fudo/objectifier-client {
                                      :git/url "https://git.fudo.org/fudo-public/objectifier-client.git"
-                                     :git/sha "d4b5ecc0f98aa8168ca3ef13e182c688591298ae"
+                                     :git/sha "3b2bcd702f41f77625bc4dfb47f53a8b1507cd4c"
                                      }
         org.fudo/milquetoast {
                               :git/url "https://git.fudo.org/fudo-public/milquetoast.git"
-                              :git/sha "8f71590fd8d63a0a7ab45a46ae6a7a1eee99f16f"
+                              :git/sha "6c64dedc17f506f3190207bbe08eb1eb1edc7e01"
                               }
         }
  }
