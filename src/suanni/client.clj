@@ -130,18 +130,19 @@
         (when verbose
           (println "stopping object listener")
           (async/close! mqtt-chan))
-        (try
-          (do (>! mqtt-chan
-                  {:type      :detection-event
-                   :time      (Instant/now)
-                   :detection
-                   (select-keys detection-event
-                                [:location
-                                 :camera-id
-                                 :detect-time
-                                 :objects
-                                 :detection-url])})
-              (recur (<! obj-chan)))
-          (catch Exception e
-            (println (.toString e))))))
+        (do
+          (try
+            (>! mqtt-chan
+                {:type      :detection-event
+                 :time      (Instant/now)
+                 :detection
+                 (select-keys detection-event
+                              [:location
+                               :camera-id
+                               :detect-time
+                               :objects
+                               :detection-url])})
+            (catch Exception e
+              (println (.toString e))))
+          (recur (<! obj-chan)))))
     (->SuanNiServer event-chan image-chan obj-chan listener)))
