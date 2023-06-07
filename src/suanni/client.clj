@@ -6,7 +6,8 @@
             [objectifier-client.core :as obj]
             [clojure.core.async :as async :refer [<! >! go-loop <!! timeout]]
             [clojure.string :as str])
-  (:import  java.time.Instant))
+  (:import  java.time.Instant
+            java.lang.Exception))
 
 ;; Let's see:
 ;;
@@ -18,6 +19,10 @@
 ;;   objectifier.
 ;;
 ;; - If anything is detected, send a notification to the callback.
+
+
+(defn- exception? [obj]
+  (instance? Exception obj))
 
 (defprotocol ISuanNiServer
   (object-channel [_]))
@@ -39,13 +44,17 @@
                                   [false e]))))
         max-wait     (* 5 60 1000)] ;; wait at most 5 minutes
     (loop [[success? result] (wrap-attempt)
-           wait-ms 1000]
+           wait-ms 1000
+           n       0]
       (if success?
         result
         (do (when verbose
               (println (format "attempt failed, sleeping %s ms" wait-ms)))
-            (<!! (timeout wait-ms))
-            (recur (wrap-attempt) (min (* wait-ms 1.25) max-wait)))))))
+            (if (< n 10)
+              (do
+                (<!! (timeout wait-ms))
+                (recur (wrap-attempt) (min (* wait-ms 1.25) max-wait) (+ n 1)))
+              (throw result)))))))
 
 (defn start!
   [& {:keys [listen-host
@@ -72,14 +81,17 @@
           (async/close! image-chan))
         (when (-> event :type (= :motion-detected))
           (let [cam (syno/get-camera-by-location! syno-client (:location event))]
-            (>! image-chan
-                {
-                 :location  (syno/location cam)
-                 :camera-id (syno/id cam)
-                 :snapshot  (syno/take-snapshot! cam)
-                 :time      (Instant/now)
-                 :camera    cam
-                 }))
+            (try
+              (>! image-chan
+                  {
+                   :location  (syno/location cam)
+                   :camera-id (syno/id cam)
+                   :snapshot  (syno/take-snapshot! cam)
+                   :time      (Instant/now)
+                   :camera    cam
+                   })
+              (catch Exception e
+                (println (.toString e)))))
           (recur (<! event-chan)))))
     (go-loop [image-data (<! image-chan)]
       (if (nil? image-data)
@@ -89,41 +101,47 @@
         (let [{:keys [location camera-id snapshot time]} image-data
               summary (retry-attempt verbose
                                      #(obj/get-summary! obj-client snapshot))]
-          (when verbose
-            (println (str "detected "
-                          (count (:objects summary))
-                          " objects: "
-                          (->> summary
-                               :objects
-                               (keys)
-                               (map name)
-                               (str/join " "))))
-            (println (str "highlights: " (:output summary))))
-          (when (> (count (:objects summary)) 0)
-            (>! obj-chan
-                {
-                 :location      location
-                 :camera-id     camera-id
-                 :detect-time   time
-                 :snapshot      snapshot
-                 :objects       (:objects summary)
-                 :detection-url (:output summary)
-                 }))
+          (if (exception? summary)
+            (println (.toString summary))
+            (do
+              (when verbose
+                (println (str "detected "
+                              (count (:objects summary))
+                              " objects: "
+                              (->> summary
+                                   :objects
+                                   (keys)
+                                   (map name)
+                                   (str/join " "))))
+                (println (str "highlights: " (:output summary))))
+              (when (> (count (:objects summary)) 0)
+                (>! obj-chan
+                    {
+                     :location      location
+                     :camera-id     camera-id
+                     :detect-time   time
+                     :snapshot      snapshot
+                     :objects       (:objects summary)
+                     :detection-url (:output summary)
+                     }))))
           (recur (<! image-chan)))))
     (go-loop [detection-event (<! obj-chan)]
       (if (nil? detection-event)
         (when verbose
           (println "stopping object listener")
           (async/close! mqtt-chan))
-        (do (>! mqtt-chan
-                {:type      :detection-event
-                 :time      (Instant/now)
-                 :detection
-                 (select-keys detection-event
-                              [:location
-                               :camera-id
-                               :detect-time
-                               :objects
-                               :detection-url])})
-            (recur (<! obj-chan)))))
+        (try
+          (do (>! mqtt-chan
+                  {:type      :detection-event
+                   :time      (Instant/now)
+                   :detection
+                   (select-keys detection-event
+                                [:location
+                                 :camera-id
+                                 :detect-time
+                                 :objects
+                                 :detection-url])})
+              (recur (<! obj-chan)))
+          (catch Exception e
+            (println (.toString e))))))
     (->SuanNiServer event-chan image-chan obj-chan listener)))
