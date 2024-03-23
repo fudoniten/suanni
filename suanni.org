@@ -1,0 +1,27 @@
+#+title: Suanni
+
+Suan Ni Home Guard
+
+* Components
+
+** Camera events
+
+Wait for events from Synology, attach metadata, and pass them to
+`suanni/events/motion/camera`
+
+** Motion events
+
+Get a list of presence sensors from `zigbee2mqtt`, and listen to them for
+events. Attach metadata, and pass to `suanni/events/motion/sensor`
+
+** Object detector
+
+Watches all events on `suanni/events/motion/#`, and if there's an attached
+location, attempts to take a snapshot from the nearby cameras, analyzing them
+for objects. When objects are detected, post the results to
+`suanni/events/object_detection`.
+
+** Home assistant bridge
+
+Listen for objects on `suanni/events/object_detection`, and forward events on to
+a Home Assistant binary sensor.
