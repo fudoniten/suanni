@@ -5,7 +5,7 @@
     nixpkgs.url = "nixpkgs/nixos-23.11";
     utils.url = "github:numtide/flake-utils";
     helpers = {
-      url = "git+https://fudo.dev/public/nix-helpers.git";
+      url = "github:fudoniten/fudo-nix-helpers";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
